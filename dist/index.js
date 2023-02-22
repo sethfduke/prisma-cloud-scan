@@ -14059,7 +14059,7 @@ function formatSarifToolDriverRules(results) {
 
   let vulns = [];
   if (vulnerabilities) {
-    vulns = vulnerabilities.map(vuln => {
+    vulns = [...new Set(vulnerabilities.map(vuln => {
       return {
         id: `${vuln.id}`,
         shortDescription: {
@@ -14075,12 +14075,12 @@ function formatSarifToolDriverRules(results) {
             '| [' + vuln.id + '](' + vuln.link + ') | ' + vuln.severity + ' | ' + (vuln.cvss || 'N/A') + ' | ' + vuln.packageName + ' | ' + vuln.packageVersion + ' | ' + (vuln.status || 'not fixed') + ' | ' + vuln.publishedDate + ' | ' + vuln.discoveredDate + ' |',
         },
       };
-    });
+    }))];
   }
 
   let comps = [];
   if (compliances) {
-    comps = compliances.map(comp => {
+    comps = [...new Set(compliances.map(comp => {
       return {
         id: `${comp.id}`,
         shortDescription: {
@@ -14096,7 +14096,7 @@ function formatSarifToolDriverRules(results) {
             '| ' + comp.id + ' | ' + comp.severity + ' | ' + comp.title + ' |',
         },
       };
-    });
+    }))];
   }
 
   return [...vulns, ...comps];
@@ -14115,7 +14115,7 @@ function formatSarifResults(results) {
   }
 
   if (findings) {
-    return findings.map(finding => {
+    return [...new Set(findings.map(finding => {
       return {
         ruleId: `${finding.id}`,
         level: 'warning',
@@ -14136,7 +14136,7 @@ function formatSarifResults(results) {
           },
         }],
       };
-    });
+    }))];
   }
 
   return [];
@@ -14153,7 +14153,7 @@ function formatSarif(twistcliVersion, resultsFile) {
           driver: {
             name: 'Prisma Cloud (twistcli)',
             version: `${twistcliVersion}`,
-            rules: formatSarifToolDriverRules(scan.results),
+            rules: (formatSarifToolDriverRules(scan.results)),
           },
         },
         results: formatSarifResults(scan.results),
